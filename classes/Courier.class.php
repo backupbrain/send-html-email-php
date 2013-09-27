@@ -9,6 +9,24 @@
 class Courier {
     const SEND_OK = 0;
 	const SENT_FAIL = 1;
+	
+	/**
+	 * Make text rfj2047 compliant	
+	 * We can convert HTML
+ 	 * character entities into ISO-8859-1, 
+ 	 * then converting the charset to 
+ 	 * Base64 for rfc2047 email subject compatibility.
+	 */
+	public function rfc2047_sanitize($input) {
+		$output = mb_encode_mimeheader(
+			html_entity_decode(
+				$input,
+				ENT_QUOTES,
+				'ISO-8859-1'),
+			'ISO-8859-1','B',"\n");
+		return $output;
+	}
+	
     /**
 	 * Set the Email object to draw the information from
 	 *
@@ -25,16 +43,7 @@ class Courier {
 		// Subjects are tricky.  Even some 
 		// sophisticated email clients don't
 		// understand unicode subject lines. 
-		// So for the subject we are converting 
-		// HTML character entities into ISO-8859-1, 
-		// then converting the charset to 
-		// Base64 for rfc2047 email subject compatibility.
-		$subject = mb_encode_mimeheader(
-			html_entity_decode(
-				$email->$subject,
-				ENT_QUOTES,
-				'ISO-8859-1'),
-			'ISO-8859-1','B',"\n");
+		$subject = rfc2047_sanitize($Email->subject);
 		
 		$message = "";
 		
