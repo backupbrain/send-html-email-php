@@ -77,7 +77,7 @@ class Courier {
 		}
 		$message .= "\r\n";
 		$message .= "--".$mime_boundary."\r\n";
-    	$message .= $Email->message_text
+    	$message .= $Email->message_text;
 		
 		
 		
